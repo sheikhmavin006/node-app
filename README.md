@@ -2,12 +2,13 @@
 #auth tutorials 
 jwt
 https://www.youtube.com/watch?v=_EP2qCmLzSE&list=PL55RiY5tL51q4D-B63KBnygU6opNPFk_q&index=11
-passport
+pasp
 https://www.youtube.com/watch?v=IlpU1z3cvSQ&list=PLBpijX9DhBeC89GHAJOtrK92hWaSFmg4n&index=1
 
-
 #git setup
+
 git init
+
 -- Link to GitHub hosted repos
 
 git remote add origin https://github.com/sheikhmavin006/node-app.git
@@ -65,5 +66,4 @@ If you want create a new branch:
 
 $ git branch <name_of_your_new_branch>
 
-#Express
-cli: express-generatior
+#use express-generator for express scafolding
