@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passport = require('passport')
 
 
 exports.register = (req, res) => {
@@ -15,33 +16,27 @@ exports.register = (req, res) => {
                     .status(409)
                     .json({ error: `User With Email ${req.body.email} already exist` });
             } else {
-                bcrypt.hash(req.body.password, 10, (err, hash) => {
-                    if (err) {
-                        return res.status(500).json({ error: err });
-                    } else {
-                        let user = new User({
-                            // _id: mongoose.Types.ObjectId(),
-                            name: req.body.name,
-                            email: req.body.email,
-                            password: hash
-                        });
-                        user
-                            .save()
-                            .then(user => {
-
-                                return res
-                                    .status(201)
-                                    .json({ _id: user._id, message: "Created Successfully" });
-                            })
-                            .catch(err => {
-                                return res.status(500).json({ error: err });
-                            });
-                    }
+                let user = new User({
+                    // _id: mongoose.Types.ObjectId(),
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: User.hashPasssword(req.body.password)
                 });
+                user.save()
+                    .then(user => {
+                        console.log(user)
+                        return res
+                            .status(201)
+                            .json({ _id: user._id, message: "Created Successfully" });
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ error: err });
+                    });
             }
         });
 };
 
+//login using jwt 
 exports.loginUser = (req, res) => {
     User.find({ email: req.body.email })
         .exec()
@@ -77,3 +72,18 @@ exports.loginUser = (req, res) => {
             return res.status(500).json({ error: err });
         });
 };
+
+//using passport
+// exports.loginUser = (req, res,next) => {
+//     passport.authenticate('local', function (err, user, info) {
+//         if (err) { return res.status(501).json(err); }
+//         if (!user) { return res.status(501).json(info); } // info is defined in passport config
+//         req.logIn(user, function (err) {
+//             if (err) { return res.status(501).json(err); }
+//             return res.status(200).json({ message: 'Login Success' });
+//         });
+//     })(req, res, next);
+// }
+
+
+

@@ -5,7 +5,7 @@ module.exports.connect = function () {
         try {
             //create cluster in mongodb atlas https//cloud.mongodb.com
             mongoose.connection.on("connected", function (ref) {
-                resolve()
+                resolve(mongoose.connection)
             });
 
 
