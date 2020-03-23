@@ -5,8 +5,8 @@ const passport = require('passport')
 
 
 exports.register = (req, res) => {
-    //post to collection
 
+    console.log(req.body)
     //check if user exist
     User.find({ email: req.body.email })
         .exec()
@@ -36,54 +36,24 @@ exports.register = (req, res) => {
         });
 };
 
-//login using jwt 
-// exports.loginUser = (req, res) => {
-//     User.find({ email: req.body.email })
-//         .exec()
-//         .then(user => {
-//             if (user.length < 1) {
-//                 return res.status(401).json({ error: `Auth failed` });
-//             } else {
-//                 bcrypt.compare(req.body.password, user[0].password, (err, result) => {
-//                     if (err) {
-//                         return res.status(401).json({ error: `Auth failed` });
-//                     } else {
-//                         const token = jwt.sign(
-//                             {
-//                                 //payload
-//                                 email: user[0].email,
-//                                 _id: user[0].id,
-//                                 name: user[0].name
-//                             },
-//                             process.env.JWT_KEY, //secret key
-//                             {
-//                                 expiresIn: "90d"
-//                             }
-//                         );
-//                         return res.status(200).json({
-//                             message: `Authentication Successfull`,
-//                             token: token
-//                         });
-//                     }
-//                 });
-//             }
-//         })
-//         .catch(err => {
-//             return res.status(500).json({ error: err });
-//         });
-// };
 
-// using passport
-exports.loginUser = (req, res,next) => {
-    passport.authenticate('local', function (err, user, info) {
+exports.loginUser = (req, res, next) => {
+    passport.authenticate('local',{session:false}, (err, user, info) => {
         if (err) { return res.status(501).json(err); }
         if (!user) { return res.status(501).json(info); } // info is defined in passport config
-        req.logIn(user, function (err) {
-            if (err) { return res.status(501).json(err); }
-            return res.status(200).json({ message: 'Login Success' });
-        });
+        const token = jwt.sign({
+            email: user.email,
+            _id: user.id,
+            name: user.name
+        }, process.env.JWT_KEY,{expiresIn:"90d"});
+        return res.json({ user, token });
+        // req.login(user,  (err) => {
+        //     if (err) { return res.status(501).json(err); }
+        //     // generate a signed son web token with the contents of user object and return it in the response
+        //     console.log("user",user)
+            
+        // });
     })(req, res, next);
 }
-
 
 

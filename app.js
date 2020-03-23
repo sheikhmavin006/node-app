@@ -8,6 +8,10 @@ const PORT = process.env.PORT || 3000; // set env with "export PORT=5000 " or in
 const morgan = require("morgan")  //logging module
 const path = require('path')
 const mongoDB = require('./config/mongoose-db')
+const multer = require('multer')
+let upload = multer();
+
+require('./config/passport');
 
 //set view engine
 app.set('view engine', "ejs")
@@ -15,6 +19,8 @@ app.set('view engine', "ejs")
 //set view 
 app.set('view', path.join(__dirname, 'views'))
 
+app.use(express.urlencoded({ extended: true }))
+app.use(upload.fields([]))
 app.use(require('cors')({ origin: [], credentials: true }))
 // app.use((req,res,next)=>{ // CORS ERROR HANDLING
 //     req.header('Access-Control-Allow-Origin','*') // * for all or for specific origin eg http://my.example.com
@@ -24,7 +30,6 @@ app.use(require('cors')({ origin: [], credentials: true }))
 //         return res.status(200).json({})
 //     }
 // })
-
 //connect to mongodb
 mongoDB.connect()
   .then((connection) => {
@@ -34,23 +39,7 @@ mongoDB.connect()
     var passport = require('passport');
     var session = require('express-session');
     const MongoStore = require('connect-mongo')(session);
-    app.use(session({
-      name: 'myname.sid',
-      resave: false,
-      saveUninitialized: false,
-      secret: process.env.PASSPORT_SECRET_KEY,
-      cookie: {
-        maxAge: 36000000,
-        httpOnly: false,
-        secure: false
-      },
-      store: new MongoStore({ mongooseConnection: connection })
-    }));
-
-    //initilize passport
-    require('./config/passport');
     app.use(passport.initialize());
-    app.use(passport.session());
 
     //middlewares
     app.use(morgan('dev')) //log route requests
@@ -72,13 +61,9 @@ mongoDB.connect()
     //         }
     //     })
     // })
-
     //start server
     app.listen(PORT, () => console.log(`listning on port ${PORT}...`))
   }).catch((err) => console.log('Failed to connect to mongo DB ', err))
-
-
-
 
 
 

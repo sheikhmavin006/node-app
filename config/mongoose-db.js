@@ -30,7 +30,6 @@ module.exports.connect = function () {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
                 family: 4
-
             })
         }
         catch (err) {

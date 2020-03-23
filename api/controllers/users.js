@@ -39,7 +39,14 @@ exports.getUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
   //delete
-  User.remove({ _id: req.params.id });
+  User.remove({
+    _id: req.params.id,
+  }, function (err, user) {
+    if (err)
+      return res.status(501).json({'error':err});
+    res.status(200).json({ message: "Deleted Successfully" });
+  });
+
 };
 
 
