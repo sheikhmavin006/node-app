@@ -8,8 +8,7 @@ const PORT = process.env.PORT || 3000; // set env with "export PORT=5000 " or in
 const morgan = require("morgan")  //logging module
 const path = require('path')
 const mongoDB = require('./config/mongoose-db')
-const multer = require('multer')
-let upload = multer();
+
 
 require('./config/passport');
 
@@ -20,7 +19,7 @@ app.set('view engine', "ejs")
 app.set('view', path.join(__dirname, 'views'))
 
 app.use(express.urlencoded({ extended: true }))
-app.use(upload.fields([]))
+
 app.use(require('cors')({ origin: [], credentials: true }))
 // app.use((req,res,next)=>{ // CORS ERROR HANDLING
 //     req.header('Access-Control-Allow-Origin','*') // * for all or for specific origin eg http://my.example.com
@@ -50,6 +49,7 @@ mongoDB.connect()
     app.use("/", require("./api/routes"))
     app.use("/users", require("./api/routes/users"))
     app.use("/auth", require("./api/routes/auth"))
+   
 
     // handle errors
     // app.use((error,req,res,next)=>{

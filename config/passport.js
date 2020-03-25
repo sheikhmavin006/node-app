@@ -1,8 +1,10 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const User = require('../api/models/user');
+const UserProfile = require('../api/models/user_profile')
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
+const bcrypt = require('bcrypt')
 
 const opts = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
@@ -22,7 +24,12 @@ passport.use('local', new LocalStrategy({
       if (!user.isValid(password)) { // isValid is defined in User schema
         return done(null, false, { message: 'Incorrect password.' });
       }
-      return done(null, user);
+      console.log(user._id)
+      UserProfile.findOne({ userId: user._id }, function (err, profile) {
+        console.log(profile)
+        return done(null, { ...user._doc, profile: profile });
+      })
+
     });
   }
 ));

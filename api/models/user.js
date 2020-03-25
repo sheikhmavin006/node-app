@@ -10,7 +10,8 @@ const userSchema= new Schema({
         unique:true,
         match:/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
     },
-    password:{type:String,required:true}
+    password:{type:String,required:true},
+    avtar:String
 
 })
 userSchema.statics.hashPasssword = function hashPasssword(password){

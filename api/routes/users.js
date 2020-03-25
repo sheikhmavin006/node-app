@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const UserControllers = require('../controllers/users') 
-const isValidUser =require('../middleware/auth')
+const UserControllers = require('../controllers/users')
+const isValidUser = require('../middleware/auth')
 
 // router.use()  middleware for this specific route instance
-router.all('*', isValidUser)
+// router.all('*', isValidUser)
 
 router
   .route("/")
@@ -16,6 +16,7 @@ router
   .get(UserControllers.getUser)
   .delete(UserControllers.deleteUser);
 
+router.use('/:id/userProfile', require('./userProfile'))
 
 
 module.exports = router;
